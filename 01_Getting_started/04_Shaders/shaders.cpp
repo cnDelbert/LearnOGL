@@ -1,26 +1,26 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #include <iostream>
+#include <cmath>
 
 constexpr int WIN_HEIGHT = 600;
 constexpr int WIN_WIDTH = 800;
 
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
-                                 "out vec4 vertexColor;\n"
                                  "\n"
                                  "void main()\n"
                                  "{\n"
                                  "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "    vertexColor = vec4(1.0f, 0.0f, 0.0f, 1.0);\n"
                                  "}\0";
 
 const char *fragmentShaderSource = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
-                                   "in vec4 vertexColor;\n"
+                                   "uniform vec3 ourColor;\n"
                                    "void main()\n"
                                    "{\n"
-                                   "    FragColor = vertexColor;\n"
+                                   "    FragColor = vec4(ourColor, 1.0f);\n"
                                    "}";
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -34,6 +34,15 @@ void processInput(GLFWwindow *window)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
+}
+
+void changeUniformValue(GLuint program)
+{
+    float timeValue = (float)glfwGetTime();
+    float greenValue = (std::sin(timeValue) / 2.0f) + 0.5f;
+    int colorLocation = glGetUniformLocation(program, "ourColor");
+    glUseProgram(program);
+    glUniform3f(colorLocation, 0.0f, greenValue, 0.0f);
 }
 
 int main()
@@ -133,7 +142,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);   // 状态设置函数
         glClear(GL_COLOR_BUFFER_BIT);   // 状态使用函数
 
-        glUseProgram(shaderProgram);
+        changeUniformValue(shaderProgram);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         // glBindVertexArray(0);
