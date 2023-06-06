@@ -35,17 +35,18 @@ void changeUniformValue(GLuint program)
 int main()
 {
     glfwInit();
-//    glfwWindowHint(GLFW_VERSION_MAJOR, 3);
-//    glfwWindowHint(GLFW_VERSION_MINOR, 3);
-//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWwindow *window = glfwCreateWindow(800, 600, "Learning OpenGL", nullptr, nullptr);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWwindow *window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, "Learning OpenGL", nullptr, nullptr);
+    if (window == nullptr)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-    int mAttributes;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &mAttributes);
-    std::cout << "OpenGL version is " << glGetString(GL_VERSION) << "\nGL vender is " << glGetString(GL_VENDOR)
-              << std::endl;
-    std::cout << "Max number of vertex attributes support is " << mAttributes << std::endl;
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -103,7 +104,7 @@ int main()
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
