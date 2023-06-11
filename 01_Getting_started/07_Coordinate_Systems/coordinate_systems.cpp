@@ -121,6 +121,14 @@ int main()
 
     stbi_image_free(data);
 
+    glm::mat4 model(1.f);
+    glm::mat4 view(1.f);
+    glm::mat4 projection(1);
+
+    model = glm::rotate(model, glm::radians(-55.f), glm::vec3(1.f, 0.f, 0.f));
+    view = glm::translate(view, glm::vec3(-1.f, 0.f, -3.f));
+    projection = glm::perspective(glm::radians(45.f), (float)WIN_WIDTH / WIN_HEIGHT, 0.1f, 100.f);
+
     while (!glfwWindowShouldClose(window))
     {
         // Outside keyboard input process
@@ -141,9 +149,16 @@ int main()
 
         glShader.use();
 
-        unsigned int transformLoc = glGetUniformLocation(glShader.progId, "transform");
+        GLint transformLoc = glGetUniformLocation(glShader.progId, "transform");
 
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+        GLint tempLoc = glGetUniformLocation(glShader.progId, "model");
+        glUniformMatrix4fv(tempLoc, 1, GL_FALSE, glm::value_ptr(model));
+        tempLoc = glGetUniformLocation(glShader.progId, "view");
+        glUniformMatrix4fv(tempLoc, 1, GL_FALSE, glm::value_ptr(view));
+        tempLoc = glGetUniformLocation(glShader.progId, "projection");
+        glUniformMatrix4fv(tempLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
