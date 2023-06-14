@@ -142,9 +142,6 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
-//    glEnableVertexAttribArray(2);
-
     int width;
     int height;
     int nrChannels;
@@ -170,11 +167,9 @@ int main()
 
     stbi_image_free(data);
 
-//    glm::mat4 model(1.f);
     glm::mat4 view(1.f);
     glm::mat4 projection(1);
 
-//    model = glm::rotate(model, glm::radians(-55.f), glm::vec3(1.f, 0.f, 0.f));
     view = glm::translate(view, glm::vec3(-1.f, 0.f, -3.f));
     projection = glm::perspective(glm::radians(45.f), (float) WIN_WIDTH / WIN_HEIGHT, 0.1f, 100.f);
 
@@ -203,9 +198,6 @@ int main()
 
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-//        glBindVertexArray(VAO);
-//        glDrawArrays(GL_TRIANGLES, 0, 36);
-
         glBindVertexArray(VAO);
         for(unsigned int i = 0; i < 10; i++)
         {
@@ -213,7 +205,6 @@ int main()
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-//            glShader.setMat4("model", model);
             GLint tempLoc = glGetUniformLocation(glShader.progId, "model");
             glUniformMatrix4fv(tempLoc, 1, GL_FALSE, glm::value_ptr(model));
             tempLoc = glGetUniformLocation(glShader.progId, "view");
