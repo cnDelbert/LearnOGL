@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <cmath>
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -170,14 +171,17 @@ int main()
     glm::mat4 view(1.f);
     glm::mat4 projection(1);
 
-    view = glm::translate(view, glm::vec3(-1.f, 0.f, -3.f));
+//    view = glm::translate(view, glm::vec3(-1.f, 0.f, -3.f));
     projection = glm::perspective(glm::radians(45.f), (float) WIN_WIDTH / WIN_HEIGHT, 0.1f, 100.f);
 
     while (!glfwWindowShouldClose(window))
     {
         // Outside keyboard input process
         processInput(window);
-
+        float radius = 10.0f;
+        float camX = sin((float)glfwGetTime()) * radius;
+        float camZ = cos((float)glfwGetTime()) * radius;
+        view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
         glEnable(GL_DEPTH_TEST);
         // Rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);   // 状态设置函数
