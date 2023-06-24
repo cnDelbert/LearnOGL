@@ -14,16 +14,36 @@
 constexpr int WIN_HEIGHT = 600;
 constexpr int WIN_WIDTH = 800;
 
+float lastFrameTime = 0.0f;
+float deltaTime = 0.0f;
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, 100, 100);
 }
 
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, glm::vec3* pos, glm::vec3* front, glm::vec3* up)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    float cameraSpeed = deltaTime * 2.5f; // adjust accordingly
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        *pos += cameraSpeed * *front;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        *pos -= cameraSpeed * *front;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        *pos -= glm::normalize(glm::cross(*front, *up)) * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        *pos += glm::normalize(glm::cross(*front, *up)) * cameraSpeed;
     }
 }
 
@@ -170,18 +190,24 @@ int main()
 
     glm::mat4 view(1.f);
     glm::mat4 projection(1);
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
 //    view = glm::translate(view, glm::vec3(-1.f, 0.f, -3.f));
     projection = glm::perspective(glm::radians(45.f), (float) WIN_WIDTH / WIN_HEIGHT, 0.1f, 100.f);
 
     while (!glfwWindowShouldClose(window))
     {
+        auto currentFrame = (float)glfwGetTime();
+        deltaTime = currentFrame - lastFrameTime;
+        lastFrameTime = currentFrame;
         // Outside keyboard input process
-        processInput(window);
+        processInput(window, &cameraPos, &cameraFront, &cameraUp);
         float radius = 10.0f;
         float camX = sin((float)glfwGetTime()) * radius;
         float camZ = cos((float)glfwGetTime()) * radius;
-        view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glEnable(GL_DEPTH_TEST);
         // Rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);   // 状态设置函数
